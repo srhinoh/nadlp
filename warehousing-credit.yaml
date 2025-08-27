@@ -1,0 +1,113 @@
+openapi: 3.0.3
+info:
+  title: NADLP Warehousing & Credit API
+  version: 1.0.0
+servers:
+  - url: https://api.nadlp.ke/warehousing-credit
+paths:
+  /warehouse-receipts:
+    post:
+      summary: Issue digital Warehouse Receipt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarehouseReceipt'
+      responses:
+        '201':
+          description: WR issued
+    get:
+      summary: List all WRs
+      responses:
+        '200':
+          description: Array of WRs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WarehouseReceipt'
+  /warehouse-receipts/{wr_id}:
+    get:
+      summary: Get WR by ID
+      parameters:
+        - name: wr_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: WR data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WarehouseReceipt'
+  /warehouse-receipts/{wr_id}/collateralize:
+    post:
+      summary: Pledge WR as collateral
+      parameters:
+        - name: wr_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollateralRequest'
+      responses:
+        '201':
+          description: Collateral recorded
+  /warehouse-receipts/{wr_id}/insure:
+    post:
+      summary: Bind insurance cover to WR
+      parameters:
+        - name: wr_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsuranceRequest'
+      responses:
+        '201':
+          description: Insurance bound
+components:
+  schemas:
+    WarehouseReceipt:
+      type: object
+      properties:
+        id: { type: string }
+        commodity: { type: string }
+        lot: { type: string }
+        grade: { type: string }
+        weight: { type: number }
+        moisture: { type: number }
+        warehouse_id: { type: string }
+        expiry: { type: string }
+        lien: { type: string }
+        certifications:
+          type: array
+          items: { type: string }
+        insured: { type: boolean }
+    CollateralRequest:
+      type: object
+      properties:
+        wr_id: { type: string }
+        bank_id: { type: string }
+        value: { type: number }
+        lien_id: { type: string }
+        pledge_date: { type: string }
+    InsuranceRequest:
+      type: object
+      properties:
+        wr_id: { type: string }
+        insurer_id: { type: string }
+        coverage_amount: { type: number }
+        policy_number: { type: string }
+        claim_status: { type: string, enum: [active, claimed, expired] }

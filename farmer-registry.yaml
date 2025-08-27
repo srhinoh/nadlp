@@ -1,0 +1,87 @@
+openapi: 3.0.3
+info:
+  title: NADLP Farmer Registry API
+  version: 1.0.0
+servers:
+  - url: https://api.nadlp.ke/farmer-registry
+paths:
+  /farmers:
+    post:
+      summary: Register a new farmer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Farmer'
+      responses:
+        '201':
+          description: Farmer registered
+    get:
+      summary: List all farmers
+      responses:
+        '200':
+          description: Array of farmers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Farmer'
+  /farmers/{farmer_id}:
+    get:
+      summary: Get farmer by ID
+      parameters:
+        - name: farmer_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Farmer data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farmer'
+  /farmers/{farmer_id}/plots:
+    post:
+      summary: Add plot for farmer
+      parameters:
+        - name: farmer_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Plot'
+      responses:
+        '201':
+          description: Plot added
+components:
+  schemas:
+    Farmer:
+      type: object
+      properties:
+        id: { type: string }
+        kyc_id: { type: string }
+        phone: { type: string }
+        coop: { type: string }
+        gender: { type: string }
+        age_band: { type: string }
+        plots:
+          type: array
+          items:
+            $ref: '#/components/schemas/Plot'
+    Plot:
+      type: object
+      properties:
+        id: { type: string }
+        geojson: { type: object }
+        crop_history:
+          type: array
+          items: { type: string }
+        irrigation: { type: string }
+        tenure: { type: string }

@@ -1,0 +1,149 @@
+openapi: 3.0.3
+info:
+  title: NADLP Extension & Alerts API
+  version: 1.0.0
+servers:
+  - url: https://api.nadlp.ke/extension-alerts
+paths:
+  /inspections:
+    post:
+      summary: Capture field inspection (offline sync supported)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Inspection'
+      responses:
+        '201':
+          description: Inspection created
+  /inspections/{officer_id}:
+    get:
+      summary: Get inspections by officer
+      parameters:
+        - name: officer_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Inspections array
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Inspection'
+  /advisories:
+    post:
+      summary: Push geo-personalized advisory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Advisory'
+      responses:
+        '201':
+          description: Advisory pushed
+  /advisories/{farmer_id}:
+    get:
+      summary: Get advisories for farmer
+      parameters:
+        - name: farmer_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Advisories array
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Advisory'
+  /micro-lessons:
+    post:
+      summary: Create micro-lesson (Kiswahili/English/local, offline-capable)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MicroLesson'
+      responses:
+        '201':
+          description: Lesson created
+  /micro-lessons/{language}:
+    get:
+      summary: Get lessons by language
+      parameters:
+        - name: language
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Lessons array
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MicroLesson'
+  /logistics-alerts:
+    post:
+      summary: Publish logistics partner route alert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogisticsAlert'
+      responses:
+        '201':
+          description: Logistics alert published
+components:
+  schemas:
+    Inspection:
+      type: object
+      properties:
+        id: { type: string }
+        officer_id: { type: string }
+        farmer_id: { type: string }
+        time: { type: string }
+        gps: { type: object }
+        photos:
+          type: array
+          items: { type: string }
+        form_data: { type: object }
+        synced: { type: boolean }
+    Advisory:
+      type: object
+      properties:
+        id: { type: string }
+        farmer_id: { type: string }
+        plot_id: { type: string }
+        type: { type: string }
+        message: { type: string }
+        geojson: { type: object }
+        language: { type: string }
+        timestamp: { type: string }
+    MicroLesson:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        content: { type: string }
+        language: { type: string }
+        offline_capable: { type: boolean }
+    LogisticsAlert:
+      type: object
+      properties:
+        id: { type: string }
+        partner_id: { type: string }
+        route: { type: string }
+        pickup_window: { type: string }
+        message: { type: string }
+        timestamp: { type: string }

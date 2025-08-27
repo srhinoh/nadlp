@@ -1,0 +1,89 @@
+openapi: 3.0.3
+info:
+  title: NADLP Identity & Consent API
+  version: 1.0.0
+servers:
+  - url: https://api.nadlp.ke/identity-consent
+paths:
+  /consent:
+    post:
+      summary: Capture explicit user consent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Consent'
+      responses:
+        '201':
+          description: Consent captured
+  /consent/revoke:
+    post:
+      summary: Revoke user consent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id: { type: string }
+                purpose: { type: string }
+                timestamp: { type: string }
+      responses:
+        '201':
+          description: Consent revoked (log)
+  /policy:
+    post:
+      summary: Set user access policy (RBAC/ABAC)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPolicy'
+      responses:
+        '201':
+          description: Policy set
+  /policy/{user_id}:
+    get:
+      summary: Get user policy
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: User policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPolicy'
+components:
+  schemas:
+    Consent:
+      type: object
+      properties:
+        user_id: { type: string }
+        purpose: { type: string }
+        scope: { type: string }
+        retention: { type: string }
+        granted: { type: boolean }
+        timestamp: { type: string }
+    ConsentLog:
+      type: object
+      properties:
+        user_id: { type: string }
+        action: { type: string }
+        purpose: { type: string }
+        timestamp: { type: string }
+    UserPolicy:
+      type: object
+      properties:
+        user_id: { type: string }
+        roles:
+          type: array
+          items: { type: string }
+        attributes: { type: object }
+        least_privilege: { type: boolean }

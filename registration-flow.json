@@ -1,0 +1,33 @@
+{
+  "start": {
+    "prompt": "Welcome to NADLP. 1. Register Farmer 2. Check Listings",
+    "next": {
+      "1": "register_farmer",
+      "2": "listings"
+    }
+  },
+  "register_farmer": {
+    "prompt": "Enter your ID/Passport Number:",
+    "input": "kyc_id",
+    "next": "enter_phone"
+  },
+  "enter_phone": {
+    "prompt": "Enter your phone number:",
+    "input": "phone",
+    "next": "confirm_registration"
+  },
+  "confirm_registration": {
+    "prompt": "Confirm registration? 1. Yes 2. No",
+    "next": {
+      "1": "success",
+      "2": "exit"
+    }
+  },
+  "success": {
+    "prompt": "Registration successful! Your NADLP ID will be sent via SMS.",
+    "next": "exit"
+  },
+  "exit": {
+    "prompt": "Thank you for using NADLP."
+  }
+}

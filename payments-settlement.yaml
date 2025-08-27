@@ -1,0 +1,101 @@
+openapi: 3.0.3
+info:
+  title: NADLP Payments & Settlement API
+  version: 1.0.0
+servers:
+  - url: https://api.nadlp.ke/payments-settlement
+paths:
+  /payments:
+    post:
+      summary: Initiate a payment (escrow, payout, fee)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payment'
+      responses:
+        '201':
+          description: Payment created
+    get:
+      summary: List all payments
+      responses:
+        '200':
+          description: Array of payments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+  /payments/{payment_id}:
+    get:
+      summary: Get payment by ID
+      parameters:
+        - name: payment_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Payment data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+  /settlements:
+    post:
+      summary: Settle contract after delivery verification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Settlement'
+      responses:
+        '201':
+          description: Settlement created
+  /financial-events:
+    post:
+      summary: Record a financial event for audits/analytics
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FinancialEvent'
+      responses:
+        '201':
+          description: Financial event recorded
+components:
+  schemas:
+    Payment:
+      type: object
+      properties:
+        id: { type: string }
+        contract_id: { type: string }
+        payer_id: { type: string }
+        payee_id: { type: string }
+        amount: { type: number }
+        method: { type: string }
+        status: { type: string, enum: [pending, completed, failed] }
+        timestamp: { type: string }
+    Settlement:
+      type: object
+      properties:
+        id: { type: string }
+        contract_id: { type: string }
+        delivery_verified: { type: boolean }
+        amount: { type: number }
+        released_to: { type: string }
+        status: { type: string, enum: [pending, released, disputed, refunded] }
+        timestamp: { type: string }
+    FinancialEvent:
+      type: object
+      properties:
+        id: { type: string }
+        event_type: { type: string }
+        contract_id: { type: string }
+        amount: { type: number }
+        details: { type: string }
+        timestamp: { type: string }

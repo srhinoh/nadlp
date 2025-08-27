@@ -1,0 +1,88 @@
+openapi: 3.0.3
+info:
+  title: NADLP Notifications & Communications API
+  version: 1.0.0
+servers:
+  - url: https://api.nadlp.ke/notifications-comms
+paths:
+  /notify:
+    post:
+      summary: Send notification to user (multi-channel)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+      responses:
+        '201':
+          description: Notification sent
+  /alerts:
+    post:
+      summary: Send critical alert to user (SMS fallback)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Alert'
+      responses:
+        '201':
+          description: Alert sent
+  /notifications/{user_id}:
+    get:
+      summary: Get notifications for a user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Array of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+  /alerts/{user_id}:
+    get:
+      summary: Get alerts for a user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Array of alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alert'
+components:
+  schemas:
+    Notification:
+      type: object
+      properties:
+        id: { type: string }
+        user_id: { type: string }
+        channel: { type: string }
+        message: { type: string }
+        type: { type: string }
+        read: { type: boolean }
+        timestamp: { type: string }
+    Alert:
+      type: object
+      properties:
+        id: { type: string }
+        user_id: { type: string }
+        channel: { type: string }
+        message: { type: string }
+        category: { type: string }
+        critical: { type: boolean }
+        delivered: { type: boolean }
+        timestamp: { type: string }

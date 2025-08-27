@@ -1,0 +1,68 @@
+openapi: 3.0.3
+info:
+  title: NADLP Analytics & Dashboards API
+  version: 1.0.0
+servers:
+  - url: https://api.nadlp.ke/analytics-open-data
+paths:
+  /dashboard-query:
+    post:
+      summary: Query real-time dashboard (production, market, price, export)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DashboardQuery'
+      responses:
+        '200':
+          description: Dashboard result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardResult'
+  /open-data:
+    get:
+      summary: List curated open datasets
+      responses:
+        '200':
+          description: Array of datasets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OpenDataset'
+    post:
+      summary: Publish open dataset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpenDataset'
+      responses:
+        '201':
+          description: Dataset published
+components:
+  schemas:
+    DashboardQuery:
+      type: object
+      properties:
+        dashboard_type: { type: string }
+        filters: { type: object }
+    DashboardResult:
+      type: object
+      properties:
+        query: { $ref: '#/components/schemas/DashboardQuery' }
+        result: { type: object }
+        timestamp: { type: string }
+    OpenDataset:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string }
+        url: { type: string }
+        privacy_preserving: { type: boolean }
+        published_at: { type: string }

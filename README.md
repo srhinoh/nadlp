@@ -1,34 +1,12 @@
-# NADLP Platform (Kenya Agriculture National Data Layer & Service Suite)
+# Warehousing & Credit Service
 
-## Overview
-NADLP is a national interoperability hub and service suite for Kenya’s agriculture sector, integrating public and private systems into a farmer-centric ecosystem.
+Provides digital Warehouse Receipts, collateralization endpoints for banks/MFIs, and insurance integration.  
+Enables WR issuance, querying, pledging, and cover/claims workflows.
 
-### Key Features
-- **Marketplace & Traceability**
-- **Warehousing & Credit**
-- **Farmer Registry & GIS**
-- **Extension & Alerts**
-- **Integrations & APIs**
-- **Analytics/Dashboards**
-- **Identity & Consent**
-- **Payments & Settlements**
-- **Notifications & Data Governance**
+## Endpoints
+- `POST /warehouse-receipts`: Issue WR
+- `GET /warehouse-receipts/{wr_id}`: Query WR
+- `POST /warehouse-receipts/{wr_id}/collateralize`: Pledge WR as collateral
+- `POST /warehouse-receipts/{wr_id}/insure`: Bind insurance cover
 
-### Channels
-- Android App (Farmers/Officers)
-- PWA/Web Portal (Buyers/Regulators)
-- USSD/SMS/IVR (Offline & Rural Access)
-
-### Stakeholders
-- Ministry of Agriculture
-- KoTDA
-- AFA, KEPHIS, NCPB
-- Farmers, Cooperatives, Buyers, Processors, Financial Institutions, Insurers
-
-## Documentation
-See `/docs/` for SRS, partner guides, data governance, and training materials.
-
-## Getting Started
-1. Clone repository
-2. Review `/docs/rollout-plan/` for milestones
-3. See `/devsecops/` for CI/CD, security, and testing setup
+See [`api-gateway/openapi-specs/warehousing-credit.yaml`](../../api-gateway/openapi-specs/warehousing-credit.yaml) for the full API spec.

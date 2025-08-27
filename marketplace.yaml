@@ -1,0 +1,83 @@
+openapi: 3.0.3
+info:
+  title: NADLP Marketplace API
+  version: 1.0.0
+servers:
+  - url: https://api.nadlp.ke/marketplace
+paths:
+  /listings:
+    get:
+      summary: Search commodity listings
+      parameters:
+        - name: commodity
+          in: query
+          schema: { type: string }
+        - name: grade
+          in: query
+          schema: { type: string }
+        - name: location
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: List of commodity listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Listing'
+    post:
+      summary: Create commodity listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Listing'
+      responses:
+        '201':
+          description: Listing created
+  /listings/{listing_id}/offer:
+    post:
+      summary: Submit offer on listing
+      parameters:
+        - name: listing_id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Offer'
+      responses:
+        '201':
+          description: Offer submitted
+components:
+  schemas:
+    Listing:
+      type: object
+      properties:
+        id: { type: string }
+        commodity: { type: string }
+        grade: { type: string }
+        quantity: { type: number }
+        location: { type: string }
+        delivery_terms: { type: string }
+        validity: { type: string }
+        reserve_price: { type: number }
+        certifications: { type: array, items: { type: string } }
+        inspector_verified: { type: boolean }
+        traceability_chain: { type: array, items: { type: string } }
+    Offer:
+      type: object
+      properties:
+        id: { type: string }
+        listing_id: { type: string }
+        buyer_id: { type: string }
+        price: { type: number }
+        delivery_window: { type: string }
+        terms: { type: string }
+        status: { type: string, enum: [pending, accepted, rejected, countered] }
